@@ -1,4 +1,4 @@
-package com.plato.models;
+package com.plato.models.users;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

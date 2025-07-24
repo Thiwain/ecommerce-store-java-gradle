@@ -2,43 +2,39 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.plato.models;
+package com.plato.models.users;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- *
- * @author Acer
- */
 @Entity
-@Table(name = "user_auth")
+@Table(name = "location")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class UserAuth {
+public class Location {
 
     @Id
-    private Long id;
+    private int id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @Column(nullable = false, name = "user_auth_status_id")
-    private UserAuthStatus userAuthStatus;
+    @JoinColumn(name = "gender_id", nullable = false)
+    private User user;
 
-    @Column(nullable = false, length = 200, name = "email")
-    private String email;
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "district_id")
+    private District district;
 
-    @Column(nullable = false, length = 20, name = "password")
-    private String password;
-
-    @Column(nullable = false, length = 6, name = "v_code")
-    private String vCode;
+    @Column(name = "address", columnDefinition = "TEXT", nullable = true)
+    private String address;
 
 }

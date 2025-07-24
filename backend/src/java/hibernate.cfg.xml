@@ -17,6 +17,9 @@
 
         <property name="hibernate.hbm2ddl.auto">create</property> <!-- Use `create` for clean testing, `update` for real use -->
 
+
+        <!--Entity-->
+        <!--Authentication-->
         <mapping class="com.plato.models.User"/>
         <mapping class="com.plato.models.Gender"/>
         <mapping class="com.plato.models.UserAuthStatus"/>
@@ -26,6 +29,8 @@
         <mapping class="com.plato.models.AdminUser"/>
         <mapping class="com.plato.models.Access"/>
         <mapping class="com.plato.models.AdminUserHasAccess"/>
+        <!--Authentication-->
+        <!--Entity-->
 
     </session-factory>
 </hibernate-configuration>
