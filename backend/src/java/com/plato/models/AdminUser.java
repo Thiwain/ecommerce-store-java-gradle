@@ -14,31 +14,33 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- *
- * @author Acer
- */
 @Entity
-@Table(name = "user_auth")
+@Table(name = "admin_user")
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-public class UserAuth {
+public class AdminUser {
 
     @Id
-    private Long id;
+    private int id;
+
+    @Column(name = "fname", nullable = false)
+    private String fname;
+
+    @Column(name = "lname", nullable = false)
+    private String lname;
+
+    @Column(name = "email", nullable = false)
+    private String email;
+
+    @Column(name = "v_code", nullable = false, length = 6)
+    private String vCode;
+
+    @Column(name = "mobile", nullable = false, length = 15)
+    private String mobile;
 
     @OneToOne(fetch = FetchType.LAZY)
     @Column(nullable = false, name = "user_auth_status_id")
     private UserAuthStatus userAuthStatus;
-
-    @Column(nullable = false, length = 200, name = "email")
-    private String email;
-
-    @Column(nullable = false, length = 20, name = "password")
-    private String password;
-
-    @Column(nullable = false, length = 6, name = "v_code")
-    private String vCode;
 
 }
