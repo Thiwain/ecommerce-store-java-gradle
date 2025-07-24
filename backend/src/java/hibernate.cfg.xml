@@ -23,7 +23,12 @@
         <property name="hibernate.hbm2ddl.auto">create</property> <!-- Use `create` for clean testing, `update` for real use -->
 
         <!-- Mapped entities -->
-        <mapping class="com.plato.models.Student"/>
+        <mapping class="com.plato.models.User"/>
+        <mapping class="com.plato.models.Gender"/>
+        <mapping class="com.plato.models.UserAuthStatus"/>
+        <mapping class="com.plato.models.UserAuth"/>
+        <mapping class="com.plato.models.Location"/>
+        <mapping class="com.plato.models.District"/>
 
     </session-factory>
 </hibernate-configuration>

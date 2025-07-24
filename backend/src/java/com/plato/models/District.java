@@ -1,0 +1,26 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.plato.models;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import org.hibernate.validator.constraints.Length;
+
+@Entity
+@Table(name = "district")
+public class District {
+
+    @Id
+    private int id;
+
+    @Column(name = "district", nullable = false, length = 10)
+    private String district;
+
+    public District() {
+    }
+
+}
