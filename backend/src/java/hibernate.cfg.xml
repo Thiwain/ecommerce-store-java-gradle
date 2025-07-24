@@ -5,30 +5,27 @@
 <hibernate-configuration>
     <session-factory>
 
-        <!-- MySQL dialect for version 8+ -->
         <property name="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</property>
 
-        <!-- JDBC driver and DB connection -->
         <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
         <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/platos_db?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=UTC</property>
         <property name="hibernate.connection.username">root</property>
         <property name="hibernate.connection.password">2005@Thiwain</property>
-
-        <!-- SQL output -->
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.format_sql">true</property>
         <property name="hibernate.use_sql_comments">true</property>
 
-        <!-- Schema generation -->
         <property name="hibernate.hbm2ddl.auto">create</property> <!-- Use `create` for clean testing, `update` for real use -->
 
-        <!-- Mapped entities -->
         <mapping class="com.plato.models.User"/>
         <mapping class="com.plato.models.Gender"/>
         <mapping class="com.plato.models.UserAuthStatus"/>
         <mapping class="com.plato.models.UserAuth"/>
         <mapping class="com.plato.models.Location"/>
         <mapping class="com.plato.models.District"/>
+        <mapping class="com.plato.models.AdminUser"/>
+        <mapping class="com.plato.models.Access"/>
+        <mapping class="com.plato.models.AdminUserHasAccess"/>
 
     </session-factory>
 </hibernate-configuration>
