@@ -1,15 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.plato.models.users;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class AdminUser {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "fname", nullable = false)
@@ -40,7 +33,6 @@ public class AdminUser {
     private String mobile;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @Column(nullable = false, name = "user_auth_status_id")
+    @JoinColumn(name = "user_auth_status_id", nullable = false)
     private UserAuthStatus userAuthStatus;
-
 }

@@ -20,16 +20,24 @@
 
         <!--Entity-->
         <!--Authentication-->
-        <mapping class="com.plato.models.User"/>
-        <mapping class="com.plato.models.Gender"/>
-        <mapping class="com.plato.models.UserAuthStatus"/>
-        <mapping class="com.plato.models.UserAuth"/>
+        <mapping class="com.plato.models.users.User"/>
+        <mapping class="com.plato.models.users.Gender"/>
+        <mapping class="com.plato.models.users.UserAuthStatus"/>
+        <mapping class="com.plato.models.users.UserAuth"/>
         <mapping class="com.plato.models.Location"/>
         <mapping class="com.plato.models.District"/>
         <mapping class="com.plato.models.AdminUser"/>
         <mapping class="com.plato.models.Access"/>
         <mapping class="com.plato.models.AdminUserHasAccess"/>
         <!--Authentication-->
+        <!--product-->
+        <mapping class="com.plato.product.Author"/>
+        <mapping class="com.plato.product.Publisher"/>
+        <mapping class="com.plato.product.Category"/>
+        <mapping class="com.plato.product.ProductDetails"/>
+        <mapping class="com.plato.product.ProductDetailsHasTag"/>
+        <mapping class="com.plato.product.SearchTag"/>
+        <!--product-->
         <!--Entity-->
 
     </session-factory>

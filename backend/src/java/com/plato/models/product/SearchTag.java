@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.plato.models.users;
+package com.plato.models.product;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,16 +15,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "access")
+@Table(name = "publisher")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class Access {
+@AllArgsConstructor
+public class SearchTag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(nullable = false, name = "type", length = 20)
-    private String type;
+    @Column(name = "tag", nullable = false, length = 45)
+    private String name;
 }

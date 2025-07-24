@@ -17,10 +17,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- *
- * @author Acer
- */
 @Entity
 @Table(name = "user")
 @NoArgsConstructor
@@ -44,5 +40,4 @@ public class User {
 
     @Column(nullable = false, length = 15)
     private String mobile;
-
 }
