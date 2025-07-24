@@ -4,6 +4,7 @@
  */
 package com.plato.models;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -32,5 +33,8 @@ public class Location {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "district_id")
     private District district;
+
+    @Column(name = "address", columnDefinition = "TEXT", nullable = true)
+    private String address;
 
 }
