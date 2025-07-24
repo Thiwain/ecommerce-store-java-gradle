@@ -1,6 +1,7 @@
 package com.plato.models.product;
 
 
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -43,6 +44,6 @@ public class ProductDetails {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @Column(name = "created_at", nullable = false)
-    private String timestamp;
+     @Column(name = "created_at", nullable = false)
+    private LocalDateTime dateTime;
 }

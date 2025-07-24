@@ -1,5 +1,6 @@
 package com.plato.models.users;
 
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -37,4 +38,10 @@ public class UserAuth {
 
     @Column(nullable = false, length = 6, name = "v_code")
     private String vCode;
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime dateTime;
+
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updateDateTime;
 }

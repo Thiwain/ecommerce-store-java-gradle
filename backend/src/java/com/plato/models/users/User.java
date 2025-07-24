@@ -4,6 +4,7 @@
  */
 package com.plato.models.users;
 
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -40,4 +41,7 @@ public class User {
 
     @Column(nullable = false, length = 15)
     private String mobile;
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime dateTime;
 }

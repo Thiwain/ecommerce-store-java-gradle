@@ -1,18 +1,18 @@
-package com.plato.models.users;
+package com.plato.models.invoice;
 
-import java.time.LocalDateTime;
+import com.plato.models.users.User;
 import javax.persistence.*;
-
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "location")
+@Table(name = "invoice")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Location {
+public class Invoice {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,13 +22,12 @@ public class Location {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "district_id", nullable = false)
-    private District district;
-
-    @Column(name = "address", columnDefinition = "TEXT", nullable = true)
-    private String address;
-
     @Column(name = "date_time", nullable = false)
     private LocalDateTime dateTime;
+
+    @Column(name = "receiver_mobile", nullable = false, length = 20)
+    private String reciverMobile;
+
+    @Column(name = "receiver_address", columnDefinition = "TEXT", nullable = true)
+    private String reciverAddress;
 }

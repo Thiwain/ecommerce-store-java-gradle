@@ -1,5 +1,6 @@
 package com.plato.models.users;
 
+import java.time.LocalDateTime;
 import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
@@ -35,4 +36,7 @@ public class AdminUser {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_auth_status_id", nullable = false)
     private UserAuthStatus userAuthStatus;
+
+    @Column(name = "date_time", nullable = false)
+    private LocalDateTime dateTime;
 }
