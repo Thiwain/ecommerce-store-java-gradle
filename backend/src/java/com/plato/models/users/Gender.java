@@ -22,6 +22,6 @@ public class Gender {
     private int id;
 
     @Column(length = 10)
-    private String gender_type;
+    private String genderType;
 
 }
