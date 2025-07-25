@@ -1,8 +1,8 @@
 package com.plato.models.invoice;
 
 import com.plato.models.users.User;
+import java.sql.Timestamp;
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +23,7 @@ public class Invoice {
     private User user;
 
     @Column(name = "date_time", nullable = false)
-    private LocalDateTime dateTime;
+    private Timestamp dateTime;
 
     @Column(name = "receiver_mobile", nullable = false, length = 20)
     private String reciverMobile;

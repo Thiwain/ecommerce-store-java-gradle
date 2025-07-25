@@ -1,6 +1,6 @@
 package com.plato.models.users;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
@@ -30,5 +30,5 @@ public class Location {
     private String address;
 
     @Column(name = "date_time", nullable = false)
-    private LocalDateTime dateTime;
+    private Timestamp dateTime;
 }

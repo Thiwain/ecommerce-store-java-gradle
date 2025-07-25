@@ -1,11 +1,11 @@
 package com.plato.models.grn;
 
+import java.sql.Timestamp;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "grn")
@@ -19,7 +19,7 @@ public class Grn {
     private int id;
 
     @Column(name = "timestamp", nullable = false)
-    private LocalDateTime timestamp;
+    private Timestamp timestamp;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "supplier_id", nullable = false)
