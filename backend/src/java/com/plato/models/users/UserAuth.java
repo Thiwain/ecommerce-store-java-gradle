@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -30,13 +31,17 @@ public class UserAuth {
     @JoinColumn(name = "user_auth_status_id", nullable = false)
     private UserAuthStatus userAuthStatus;
 
-    @Column(nullable = false, length = 200, name = "email")
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @Column(nullable = true, length = 200, name = "email")
     private String email;
 
     @Column(nullable = false, length = 20, name = "password")
     private String password;
 
-    @Column(nullable = false, length = 6, name = "v_code")
+    @Column(nullable = true, length = 6, name = "v_code")
     private String vCode;
 
     @Column(name = "created_at", nullable = false)
