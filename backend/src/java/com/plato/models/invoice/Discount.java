@@ -12,9 +12,12 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -39,4 +42,8 @@ public class Discount {
 
     @Column(name = "usage_count", nullable = false)
     private int usageCount;
+    
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "discount_status_id", nullable = false)
+    private DiscountOfferStatus discountOfferStatus;
 }

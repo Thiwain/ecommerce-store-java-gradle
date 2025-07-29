@@ -85,6 +85,7 @@ public class DataSeederUtil {
             }
 
             tx.commit();
+            session.close();
         } catch (Exception e) {
             LoggerConfig.logger.log(Level.WARNING, "MySQL Driver not found!", e);
             e.printStackTrace();

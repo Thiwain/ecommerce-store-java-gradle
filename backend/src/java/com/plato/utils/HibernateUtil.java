@@ -61,6 +61,7 @@ public class HibernateUtil {
                 configuration.addAnnotatedClass(Orders.class);
 
                 configuration.addAnnotatedClass(Discount.class);
+                configuration.addAnnotatedClass(DiscountOfferStatus.class);
                 configuration.addAnnotatedClass(Invoice.class);
                 configuration.addAnnotatedClass(InvoiceHasProductDetails.class);
 
