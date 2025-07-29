@@ -2,6 +2,7 @@ package com.plato.utils;
 
 import com.plato.config.LoggerConfig;
 import com.plato.models.deployment.Deployment;
+import com.plato.models.invoice.DiscountOfferStatus;
 import com.plato.models.users.District;
 import com.plato.models.users.Gender;
 import com.plato.models.users.UserAuthStatus;
@@ -50,6 +51,13 @@ public class DataSeederUtil {
                 session.save(new UserAuthStatus(0, "INACTIVE"));
             }
 
+            if (!discountOfferStatusExists(session, "VALID")) {
+                session.save(new DiscountOfferStatus(0, "VALID"));
+            }
+            if (!discountOfferStatusExists(session, "INVALID")) {
+                session.save(new DiscountOfferStatus(0, "INVALID"));
+            }
+
             Vector<String> districts = new Vector<>();
 
             districts.add("Colombo");
@@ -95,6 +103,12 @@ public class DataSeederUtil {
     private boolean genderExists(Session session, String genderType) {
         Criteria criteria = session.createCriteria(Gender.class);
         criteria.add(Restrictions.eq("genderType", genderType));
+        return criteria.uniqueResult() != null;
+    }
+
+    private boolean discountOfferStatusExists(Session session, String staus) {
+        Criteria criteria = session.createCriteria(DiscountOfferStatus.class);
+        criteria.add(Restrictions.eq("status", staus));
         return criteria.uniqueResult() != null;
     }
 
