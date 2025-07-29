@@ -4,7 +4,6 @@
  */
 package com.plato.models.users;
 
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,6 +14,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 @Entity
 @Table(name = "district")
 @NoArgsConstructor
@@ -26,7 +26,7 @@ public class District {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "district", nullable = false, length = 10)
+    @Column(name = "district", nullable = false, length = 50, unique = true)
     private String district;
 
 }
