@@ -1,6 +1,8 @@
 package com.plato.controllers.user;
 
 import com.plato.config.LoggerConfig;
+import com.plato.dto.request.SuccessResponseDTO;
+import com.plato.dto.request.UserRequestDTO;
 import com.plato.models.users.Gender;
 import com.plato.models.users.User;
 import com.plato.models.users.UserAuth;
@@ -129,25 +131,3 @@ public class UserRegisterServlet extends HttpServlet {
     }
 }
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-class UserRequestDTO {
-
-    private String fname;
-    private String lname;
-    private String gender;
-    private String mobile;
-    private String email;
-    private String password;
-}
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-class SuccessResponseDTO {
-
-    private String fname;
-    private String lname;
-    private String email;
-}
