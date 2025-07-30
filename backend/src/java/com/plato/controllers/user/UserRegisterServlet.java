@@ -41,7 +41,7 @@ public class UserRegisterServlet extends HttpServlet {
         try {
             userRequestDTO = jrrp.jsonRequestProcess(request, UserRequestDTO.class);
         } catch (Exception e) {
-            jrrp.jsonResponseProcess(response, false, null, "Invalid JSON: " + e.getMessage());
+            jrrp.jsonResponseProcess(response, 400, false, null, "Invalid JSON: " + e.getMessage());
             return;
         }
 
@@ -53,21 +53,21 @@ public class UserRegisterServlet extends HttpServlet {
                     || userRequestDTO.getMobile() == null || userRequestDTO.getMobile().isEmpty()
                     || userRequestDTO.getEmail() == null || userRequestDTO.getEmail().isEmpty()
                     || userRequestDTO.getPassword() == null || userRequestDTO.getPassword().isEmpty()) {
-                jrrp.jsonResponseProcess(response, false, null, "Fields shouldn't be empty!");
+                jrrp.jsonResponseProcess(response, 400, false, null, "Fields shouldn't be empty!");
                 return;
             } else if (!ValidationUtils.isEmailValid(userRequestDTO.getEmail())) {
-                jrrp.jsonResponseProcess(response, false, null, "Invalid Email Address!");
+                jrrp.jsonResponseProcess(response, 400, false, null, "Invalid Email Address!");
                 return;
             } else if (!ValidationUtils.isPasswordValid(userRequestDTO.getPassword())) {
-                jrrp.jsonResponseProcess(response, false, null, "Invalid Password!");
+                jrrp.jsonResponseProcess(response, 400, false, null, "Invalid Password!");
                 return;
             } else if (!ValidationUtils.isMobileValid(userRequestDTO.getMobile())) {
-                jrrp.jsonResponseProcess(response, false, null, "Invalid Mobile Number!");
+                jrrp.jsonResponseProcess(response, 400, false, null, "Invalid Mobile Number!");
                 return;
             }
 
             if (!new DbUtils().simpleSearch(session, UserAuth.class, "email", userRequestDTO.getEmail()).list().isEmpty()) {
-                jrrp.jsonResponseProcess(response, false, null, "This user already exists!");
+                jrrp.jsonResponseProcess(response, 409, false, null, "This user already exists!");
                 return;
             }
 
@@ -78,7 +78,7 @@ public class UserRegisterServlet extends HttpServlet {
                 if (genders.isEmpty()) {
                     throw new Exception("Invalid gender type: " + userRequestDTO.getGender());
                 }
-                
+
                 User user = new User();
                 user.setFname(userRequestDTO.getFname());
                 user.setLname(userRequestDTO.getLname());
@@ -87,7 +87,7 @@ public class UserRegisterServlet extends HttpServlet {
                 user.setDateTime(new Timestamp(System.currentTimeMillis()));
 
                 session.save(user);
-                session.flush(); 
+                session.flush();
 
                 List<UserAuthStatus> authStatuses = new DbUtils().simpleSearch(session, UserAuthStatus.class, "status", "ACTIVE").list();
                 if (authStatuses.isEmpty()) {
@@ -106,20 +106,21 @@ public class UserRegisterServlet extends HttpServlet {
 
                 tx.commit();
 
-                jrrp.jsonResponseProcess(response, true,
+                jrrp.jsonResponseProcess(response, 201, true,
                         new SuccessResponseDTO(user.getFname(), user.getLname(), ua.getEmail()),
                         "User registered successfully");
 
             } catch (Exception e) {
                 tx.rollback();
                 LoggerConfig.logger.log(Level.SEVERE, "Error occurred during user registration", e);
-                jrrp.jsonResponseProcess(response, false, null, "Error: " + e.getMessage());
+                jrrp.jsonResponseProcess(response, 500, false, null, "Error: " + e.getMessage());
             }
 
         } catch (Exception e) {
             LoggerConfig.logger.log(Level.SEVERE, "System error", e);
-            jrrp.jsonResponseProcess(response, false, null, "System error: " + e.getMessage());
+            jrrp.jsonResponseProcess(response, 500, false, null, "System error: " + e.getMessage());
         }
+
     }
 
     @Override

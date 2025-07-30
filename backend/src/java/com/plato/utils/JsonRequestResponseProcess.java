@@ -50,12 +50,13 @@ public class JsonRequestResponseProcess {
         }
     }
 
-    public <T> void jsonResponseProcess(HttpServletResponse response, boolean status, T data, String message) throws IOException {
+    public <T> void jsonResponseProcess(HttpServletResponse response, int statusCode, boolean success, T data, String message) throws IOException {
+        response.setStatus(statusCode);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
         ApiResponse<T> apiResponse = new ApiResponse<>(
-                status,
+                success,
                 message,
                 data
         );
@@ -65,4 +66,5 @@ public class JsonRequestResponseProcess {
             out.flush();
         }
     }
+
 }
