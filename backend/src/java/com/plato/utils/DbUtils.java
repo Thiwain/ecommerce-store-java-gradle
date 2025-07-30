@@ -10,9 +10,21 @@ import org.hibernate.criterion.Restrictions;
 
 public class DbUtils {
 
-    public static <T> Criteria simpleSearch(Session session, Class<T> clazz, String name) {
+    public <T> Criteria simpleSearch(Session session, Class<T> clazz, String col, String value) {
         Criteria criteria = session.createCriteria(clazz);
-        criteria.add(Restrictions.eq("name", name));
+        criteria.add(Restrictions.eq(col, value));
         return criteria;
     }
+
+    public <T> Criteria multiSearch(Session session, Class<T> clazz, String[] cols, String[] values) {
+        if (cols.length != values.length) {
+            throw new IllegalArgumentException("Column and value arrays must have the same length");
+        }
+        Criteria criteria = session.createCriteria(clazz);
+        for (int i = 0; i < cols.length; i++) {
+            criteria.add(Restrictions.eq(cols[i], values[i]));
+        }
+        return criteria;
+    }
+
 }
