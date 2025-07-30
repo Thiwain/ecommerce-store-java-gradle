@@ -5,10 +5,17 @@
 package com.plato.utils;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.plato.dto.response.ApiResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,18 +24,30 @@ public class JsonRequestResponseProcess {
 
     private final Gson gson = new Gson();
 
-    public <T> T jsonRequsetProcess(HttpServletRequest request, Class<T> clazz) throws ServletException, IOException {
+    public <T> T jsonRequestProcess(HttpServletRequest request, Class<T> clazz)
+            throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         StringBuilder jsonBuilder = new StringBuilder();
-
         try (BufferedReader reader = request.getReader()) {
             String line;
             while ((line = reader.readLine()) != null) {
                 jsonBuilder.append(line);
             }
         }
-
-        return gson.fromJson(jsonBuilder.toString(), clazz);
+        try {
+            JsonObject jsonObject = JsonParser.parseString(jsonBuilder.toString()).getAsJsonObject();
+            Set<String> validFields = Arrays.stream(clazz.getDeclaredFields())
+                    .map(Field::getName)
+                    .collect(Collectors.toSet());
+            for (String jsonKey : jsonObject.keySet()) {
+                if (!validFields.contains(jsonKey)) {
+                    throw new ServletException("Unknown field in JSON: " + jsonKey);
+                }
+            }
+            return gson.fromJson(jsonObject, clazz);
+        } catch (JsonSyntaxException e) {
+            throw new ServletException("Invalid JSON for: " + clazz.getSimpleName(), e);
+        }
     }
 
     public <T> void jsonResponseProcess(HttpServletResponse response, boolean status, T data, String message) throws IOException {

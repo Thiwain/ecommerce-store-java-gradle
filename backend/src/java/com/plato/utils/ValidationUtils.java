@@ -28,4 +28,9 @@ public class ValidationUtils {
     public static boolean isDouble(String text) {
         return text.matches("^\\d+(\\.\\d{2})?$");
     }
+
+    public static boolean isMobileValid(String mobile) {
+        return mobile.matches("^(070|071|072|075|076|077|078)\\d{7}$");
+    }
+
 }
