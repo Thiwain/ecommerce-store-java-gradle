@@ -35,13 +35,16 @@ public class ProductDetails {
 
     @Column(columnDefinition = "TEXT", nullable = true)
     private String description;
-   
-    @Column(columnDefinition = "TEXT", nullable = true)
+
+    @Column(columnDefinition = "TEXT", name = "img_url", nullable = true)
     private String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id", nullable = false)
     private Author author;
+
+    @Column(name = "product_visibility", nullable = true)
+    private boolean productVisibility;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
