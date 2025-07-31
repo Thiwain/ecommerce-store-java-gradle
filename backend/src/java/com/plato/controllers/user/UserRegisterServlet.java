@@ -8,6 +8,7 @@ import com.plato.models.users.User;
 import com.plato.models.users.UserAuth;
 import com.plato.models.users.UserAuthStatus;
 import com.plato.utils.DbUtils;
+import com.plato.utils.GoogleMailSenderUtil;
 import com.plato.utils.HibernateUtil;
 import com.plato.utils.JsonRequestResponseProcess;
 import com.plato.utils.ValidationUtils;
@@ -24,9 +25,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.Session;
 
 @WebServlet(name = "UserRegisterServlet", urlPatterns = {"/v1/UserRegister"})
@@ -108,6 +106,88 @@ public class UserRegisterServlet extends HttpServlet {
 
                 tx.commit();
 
+                GoogleMailSenderUtil.send("thiwainm@gmail.com", "Hello World", ""
+                        + "<!DOCTYPE html>\n"
+                        + "<html lang=\"en\">\n"
+                        + "<head>\n"
+                        + "  <meta charset=\"UTF-8\" />\n"
+                        + "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>\n"
+                        + "  <title>Welcome to Plato's Wisdom</title>\n"
+                        + "  <style>\n"
+                        + "    body {\n"
+                        + "      margin: 0;\n"
+                        + "      padding: 0;\n"
+                        + "      background-color: #f4f4f7;\n"
+                        + "      font-family: 'Segoe UI', sans-serif;\n"
+                        + "      color: #333;\n"
+                        + "    }\n"
+                        + "    .container {\n"
+                        + "      max-width: 600px;\n"
+                        + "      margin: auto;\n"
+                        + "      background: #ffffff;\n"
+                        + "      border-radius: 8px;\n"
+                        + "      box-shadow: 0 2px 8px rgba(0,0,0,0.1);\n"
+                        + "      overflow: hidden;\n"
+                        + "    }\n"
+                        + "    .header {\n"
+                        + "      background-color: #4B0082;\n"
+                        + "      color: #fff;\n"
+                        + "      text-align: center;\n"
+                        + "      padding: 24px 16px;\n"
+                        + "      font-size: 24px;\n"
+                        + "      font-weight: bold;\n"
+                        + "    }\n"
+                        + "    .content {\n"
+                        + "      padding: 32px 24px;\n"
+                        + "      text-align: center;\n"
+                        + "    }\n"
+                        + "    h1 {\n"
+                        + "      color: #4B0082;\n"
+                        + "      margin-bottom: 16px;\n"
+                        + "    }\n"
+                        + "    p {\n"
+                        + "      font-size: 16px;\n"
+                        + "      line-height: 1.6;\n"
+                        + "      margin: 0 0 16px;\n"
+                        + "    }\n"
+                        + "    .button {\n"
+                        + "      display: inline-block;\n"
+                        + "      margin-top: 24px;\n"
+                        + "      padding: 12px 24px;\n"
+                        + "      background-color: #4B0082;\n"
+                        + "      color: #fff;\n"
+                        + "      text-decoration: none;\n"
+                        + "      border-radius: 6px;\n"
+                        + "      font-weight: bold;\n"
+                        + "      transition: background-color 0.3s ease;\n"
+                        + "    }\n"
+                        + "    .button:hover {\n"
+                        + "      background-color: #360062;\n"
+                        + "    }\n"
+                        + "    .footer {\n"
+                        + "      text-align: center;\n"
+                        + "      font-size: 12px;\n"
+                        + "      color: #888;\n"
+                        + "      padding: 16px;\n"
+                        + "    }\n"
+                        + "  </style>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <div class=\"container\">\n"
+                        + "    <div class=\"header\">📚 Plato's Wisdom</div>\n"
+                        + "    <div class=\"content\">\n"
+                        + "      <h1>Welcome Aboard!</h1>\n"
+                        + "      <p>Your account has been successfully created.</p>\n"
+                        + "      <p>Step into a timeless library of knowledge and imagination. Discover classics, modern reads, and rare finds — all in one place.</p>\n"
+                        + "      <a href=\"https://platoswisdom.com/login\" class=\"button\">Log In & Start Reading</a>\n"
+                        + "    </div>\n"
+                        + "    <div class=\"footer\">\n"
+                        + "      © 2000–2025 Plato’s Wisdom. All rights reserved.\n"
+                        + "    </div>\n"
+                        + "  </div>\n"
+                        + "</body>\n"
+                        + "</html>");
+                
                 jrrp.jsonResponseProcess(response, 201, true,
                         new SuccessResponseDTO(user.getFname(), user.getLname(), ua.getEmail()),
                         "User registered successfully");
@@ -130,4 +210,3 @@ public class UserRegisterServlet extends HttpServlet {
         return "Handles user registration using Gson to parse and return JSON";
     }
 }
-
