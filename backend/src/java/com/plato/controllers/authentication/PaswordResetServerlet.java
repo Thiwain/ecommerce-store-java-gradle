@@ -47,7 +47,6 @@ public class PaswordResetServerlet extends HttpServlet {
             return;
         }
 
-        // Validation
         if (!ValidationUtils.isEmailValid(dto.getEmail())) {
             jrrp.jsonResponseProcess(response, 400, false, null, "Invalid Email");
             return;
@@ -73,8 +72,8 @@ public class PaswordResetServerlet extends HttpServlet {
 
             UserAuth user = users.get(0);
             Transaction tx = session.beginTransaction();
-            user.setPassword(dto.getPassword()); // You should hash it in real apps!
-            user.setVCode(null); // Invalidate the used verification code
+            user.setPassword(dto.getPassword());
+            user.setVCode(null); 
             session.update(user);
             tx.commit();
 

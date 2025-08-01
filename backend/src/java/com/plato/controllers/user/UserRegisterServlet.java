@@ -174,7 +174,7 @@ public class UserRegisterServlet extends HttpServlet {
                         + "</head>\n"
                         + "<body>\n"
                         + "  <div class=\"container\">\n"
-                        + "    <div class=\"header\">📚 Welcome to Plato's Wisdom</div>\n"
+                        + "    <div class=\"header\">Welcome to Plato's Wisdom</div>\n"
                         + "    <div class=\"content\">\n"
                         + "      <h1>Hello, Book Lover!</h1>\n"
                         + "      <p>Thank you for joining Plato’s Wisdom — your personal gateway to timeless literature, modern gems, and hidden treasures.</p>\n"
