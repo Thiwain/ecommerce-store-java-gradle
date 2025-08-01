@@ -106,12 +106,12 @@ public class UserRegisterServlet extends HttpServlet {
 
                 tx.commit();
 
-                GoogleMailSenderUtil.send("thiwainm@gmail.com", "Hello World", ""
+                String htmlBody = ""
                         + "<!DOCTYPE html>\n"
                         + "<html lang=\"en\">\n"
                         + "<head>\n"
-                        + "  <meta charset=\"UTF-8\" />\n"
-                        + "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>\n"
+                        + "  <meta charset=\"UTF-8\">\n"
+                        + "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
                         + "  <title>Welcome to Plato's Wisdom</title>\n"
                         + "  <style>\n"
                         + "    body {\n"
@@ -148,12 +148,12 @@ public class UserRegisterServlet extends HttpServlet {
                         + "    p {\n"
                         + "      font-size: 16px;\n"
                         + "      line-height: 1.6;\n"
-                        + "      margin: 0 0 16px;\n"
+                        + "      margin-bottom: 16px;\n"
                         + "    }\n"
                         + "    .button {\n"
                         + "      display: inline-block;\n"
-                        + "      margin-top: 24px;\n"
                         + "      padding: 12px 24px;\n"
+                        + "      margin-top: 16px;\n"
                         + "      background-color: #4B0082;\n"
                         + "      color: #fff;\n"
                         + "      text-decoration: none;\n"
@@ -174,20 +174,23 @@ public class UserRegisterServlet extends HttpServlet {
                         + "</head>\n"
                         + "<body>\n"
                         + "  <div class=\"container\">\n"
-                        + "    <div class=\"header\">📚 Plato's Wisdom</div>\n"
+                        + "    <div class=\"header\">📚 Welcome to Plato's Wisdom</div>\n"
                         + "    <div class=\"content\">\n"
-                        + "      <h1>Welcome Aboard!</h1>\n"
-                        + "      <p>Your account has been successfully created.</p>\n"
-                        + "      <p>Step into a timeless library of knowledge and imagination. Discover classics, modern reads, and rare finds — all in one place.</p>\n"
-                        + "      <a href=\"https://platoswisdom.com/login\" class=\"button\">Log In & Start Reading</a>\n"
+                        + "      <h1>Hello, Book Lover!</h1>\n"
+                        + "      <p>Thank you for joining Plato’s Wisdom — your personal gateway to timeless literature, modern gems, and hidden treasures.</p>\n"
+                        + "      <p>We’ve built this bookstore for minds that seek knowledge, imagination, and depth. From ancient philosophy to the latest fiction, you’ll find it all here.</p>\n"
+                        + "      <a href=\"https://platoswisdom.com/shop\" class=\"button\">Browse Our Library</a>\n"
                         + "    </div>\n"
                         + "    <div class=\"footer\">\n"
-                        + "      © 2000–2025 Plato’s Wisdom. All rights reserved.\n"
+                        + "      © 2000–2025 Plato’s Wisdom. All rights reserved.<br>\n"
+                        + "      You're receiving this email because you signed up at Plato's Wisdom.\n"
                         + "    </div>\n"
                         + "  </div>\n"
                         + "</body>\n"
-                        + "</html>");
-                
+                        + "</html>";
+
+                GoogleMailSenderUtil.send("thiwainm@gmail.com", "Hello World", htmlBody);
+
                 jrrp.jsonResponseProcess(response, 201, true,
                         new SuccessResponseDTO(user.getFname(), user.getLname(), ua.getEmail()),
                         "User registered successfully");
