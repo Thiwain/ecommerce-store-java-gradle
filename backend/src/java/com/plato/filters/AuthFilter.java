@@ -8,12 +8,12 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 // Protect specific paths (you can adjust as needed)
-@WebFilter(urlPatterns = {"/v1/user-profile/*", "/v1/logout", "/v1/update-password"})
+@WebFilter(urlPatterns = {"/v1/user-profile/*", "/v1/logout"})
 public class AuthFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-        throws IOException, ServletException {
+            throws IOException, ServletException {
 
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
@@ -32,4 +32,3 @@ public class AuthFilter implements Filter {
         chain.doFilter(request, response);
     }
 }
-
