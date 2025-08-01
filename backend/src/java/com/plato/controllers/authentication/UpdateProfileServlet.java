@@ -1,7 +1,9 @@
 package com.plato.controllers.authentication;
 
 import com.plato.config.LoggerConfig;
+import com.plato.models.users.District;
 import com.plato.models.users.Gender;
+import com.plato.models.users.Location;
 import com.plato.models.users.User;
 import com.plato.models.users.UserAuth;
 import com.plato.utils.HibernateUtil;
@@ -21,23 +23,26 @@ import javax.servlet.http.*;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.List;
 import java.util.logging.Level;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-class ProfileUpdateReqDTO {
+class ProfileUpdateRequestDTO {
 
     private String fname;
     private String lname;
-    private int genderId;
     private String mobile;
+    private int genderId;
+    private int districtId;
+    private String address;
 }
 
-@WebServlet(name = "UpdateProfileServlet", urlPatterns = {"/v1/update-profile"})
+@WebServlet(name = "ProfileUpdateServlet", urlPatterns = {"/v1/update-profile"})
 public class UpdateProfileServlet extends HttpServlet {
 
-    private final JsonRequestResponseProcess jrrp = new JsonRequestResponseProcess();
+    JsonRequestResponseProcess jrrp = new JsonRequestResponseProcess();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -45,57 +50,76 @@ public class UpdateProfileServlet extends HttpServlet {
 
         HttpSession httpSession = request.getSession(false);
         if (httpSession == null || httpSession.getAttribute("user") == null) {
-            jrrp.jsonResponseProcess(response, 401, false, null, "Unauthorized access.");
+            jrrp.jsonResponseProcess(response, 403, false, null, "Unauthorized access");
             return;
         }
 
-        ProfileUpdateReqDTO dto;
+        UserAuth loggedUser = (UserAuth) httpSession.getAttribute("user");
+        ProfileUpdateRequestDTO dto;
+
         try {
-            dto = jrrp.jsonRequestProcess(request, ProfileUpdateReqDTO.class);
+            dto = jrrp.jsonRequestProcess(request, ProfileUpdateRequestDTO.class);
         } catch (Exception e) {
-            jrrp.jsonResponseProcess(response, 400, false, null, "Invalid request data.");
+            jrrp.jsonResponseProcess(response, 400, false, null, "Invalid JSON input");
             return;
         }
-
-        UserAuth userAuth = (UserAuth) httpSession.getAttribute("user");
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction tx = session.beginTransaction();
 
-            // Fetch up-to-date UserAuth from DB
-            UserAuth freshAuth = session.get(UserAuth.class, userAuth.getId());
-            if (freshAuth == null) {
-                jrrp.jsonResponseProcess(response, 404, false, null, "User not found.");
+            User user = session.get(User.class, loggedUser.getUser().getId());
+            if (user == null) {
+                jrrp.jsonResponseProcess(response, 404, false, null, "User not found");
                 return;
             }
 
-            // Update fields
-            User user = freshAuth.getUser();
             user.setFname(dto.getFname());
             user.setLname(dto.getLname());
             user.setMobile(dto.getMobile());
-            user.setGender(session.get(Gender.class, dto.getGenderId()));
-            user.setDateTime(Timestamp.from(Instant.now()));
 
-            freshAuth.setUpdateDateTime(Timestamp.from(Instant.now()));
+            Gender gender = session.get(Gender.class, dto.getGenderId());
+            if (gender == null) {
+                jrrp.jsonResponseProcess(response, 400, false, null, "Invalid gender ID");
+                return;
+            }
+            user.setGender(gender);
 
             session.update(user);
-            session.update(freshAuth);
+
+            List<Location> locationList = session
+                    .createQuery("FROM Location l WHERE l.user.id = :uid", Location.class)
+                    .setParameter("uid", user.getId())
+                    .list();
+
+            District district = session.get(District.class, dto.getDistrictId());
+            if (district == null) {
+                jrrp.jsonResponseProcess(response, 400, false, null, "Invalid district ID");
+                return;
+            }
+
+            Location location;
+            if (locationList.isEmpty()) {
+                location = new Location();
+                location.setUser(user);
+            } else {
+                location = locationList.get(0);
+            }
+
+            location.setDistrict(district);
+            location.setAddress(dto.getAddress());
+            location.setDateTime(Timestamp.from(Instant.now()));
+
+            session.saveOrUpdate(location);
 
             tx.commit();
-
-            // Update session with latest userAuth
-            httpSession.setAttribute("user", freshAuth);
-
-            jrrp.jsonResponseProcess(response, 200, true, null, "Profile updated successfully.");
+            jrrp.jsonResponseProcess(response, 200, true, null, "Profile updated successfully");
         } catch (Exception e) {
-            LoggerConfig.logger.log(Level.SEVERE, "Profile update failed", e);
-            jrrp.jsonResponseProcess(response, 500, false, null, "Internal Server Error.");
+            jrrp.jsonResponseProcess(response, 500, false, null, "Server error: " + e.getMessage());
         }
     }
 
     @Override
     public String getServletInfo() {
-        return "Handles profile update for authenticated users.";
+        return "Handles user profile updates";
     }
 }
