@@ -95,6 +95,7 @@ public class DataSeederUtil {
 
             Vector<String> bookCategories = new Vector<>();
             bookCategories.add("Fiction");
+            bookCategories.add("Comics");
             bookCategories.add("Non-Fiction");
             bookCategories.add("Science Fiction");
             bookCategories.add("Fantasy");
