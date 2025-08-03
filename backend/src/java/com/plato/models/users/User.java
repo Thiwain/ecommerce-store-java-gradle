@@ -37,10 +37,10 @@ public class User {
     private String lname;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gender_id", nullable = false)
+    @JoinColumn(name = "gender_id", nullable = true)
     private Gender gender;
 
-    @Column(nullable = false, length = 15)
+    @Column(nullable = true, length = 15)
     private String mobile;
 
     @Column(name = "created_at", nullable = false)

@@ -49,8 +49,6 @@ public class UserRegisterServlet extends HttpServlet {
 
             if (userRequestDTO.getFname() == null || userRequestDTO.getFname().isEmpty()
                     || userRequestDTO.getLname() == null || userRequestDTO.getLname().isEmpty()
-                    || userRequestDTO.getGender() == null || userRequestDTO.getGender().isEmpty()
-                    || userRequestDTO.getMobile() == null || userRequestDTO.getMobile().isEmpty()
                     || userRequestDTO.getEmail() == null || userRequestDTO.getEmail().isEmpty()
                     || userRequestDTO.getPassword() == null || userRequestDTO.getPassword().isEmpty()) {
                 jrrp.jsonResponseProcess(response, 400, false, null, "Fields shouldn't be empty!");
@@ -61,10 +59,7 @@ public class UserRegisterServlet extends HttpServlet {
             } else if (!ValidationUtils.isPasswordValid(userRequestDTO.getPassword())) {
                 jrrp.jsonResponseProcess(response, 400, false, null, "Invalid Password!");
                 return;
-            } else if (!ValidationUtils.isMobileValid(userRequestDTO.getMobile())) {
-                jrrp.jsonResponseProcess(response, 400, false, null, "Invalid Mobile Number!");
-                return;
-            }
+            } 
 
             if (!new DbUtils().simpleSearch(session, UserAuth.class, "email", userRequestDTO.getEmail()).list().isEmpty()) {
                 jrrp.jsonResponseProcess(response, 409, false, null, "This user already exists!");
@@ -74,16 +69,10 @@ public class UserRegisterServlet extends HttpServlet {
             org.hibernate.Transaction tx = session.beginTransaction();
 
             try {
-                List<Gender> genders = new DbUtils().simpleSearch(session, Gender.class, "genderType", userRequestDTO.getGender()).list();
-                if (genders.isEmpty()) {
-                    throw new Exception("Invalid gender type: " + userRequestDTO.getGender());
-                }
 
                 User user = new User();
                 user.setFname(userRequestDTO.getFname());
                 user.setLname(userRequestDTO.getLname());
-                user.setGender(genders.get(0));
-                user.setMobile(userRequestDTO.getMobile());
                 user.setDateTime(new Timestamp(System.currentTimeMillis()));
 
                 session.save(user);

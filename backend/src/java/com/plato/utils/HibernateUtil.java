@@ -36,7 +36,7 @@ public class HibernateUtil {
 
                 settings.put("hibernate.show_sql", "true");
                 settings.put("hibernate.format_sql", "true");
-                settings.put("hibernate.hbm2ddl.auto", "update");
+                settings.put("hibernate.hbm2ddl.auto", "create");
 
                 configuration.setProperties(settings);
 
@@ -49,11 +49,13 @@ public class HibernateUtil {
                 configuration.addAnnotatedClass(User.class);
                 configuration.addAnnotatedClass(UserAuth.class);
                 configuration.addAnnotatedClass(UserAuthStatus.class);
+                configuration.addAnnotatedClass(Cart.class);
 
                 configuration.addAnnotatedClass(Author.class);
                 configuration.addAnnotatedClass(Category.class);
                 configuration.addAnnotatedClass(ProductDetails.class);
                 configuration.addAnnotatedClass(ProductDetailsHasTag.class);
+                configuration.addAnnotatedClass(CategoryHasImg.class);
                 configuration.addAnnotatedClass(Publisher.class);
                 configuration.addAnnotatedClass(SearchTag.class);
 

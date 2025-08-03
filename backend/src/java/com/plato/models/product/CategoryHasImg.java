@@ -1,5 +1,6 @@
 package com.plato.models.product;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -13,7 +14,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "category")
+@Table(name = "category_has_img")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,4 +28,6 @@ public class CategoryHasImg {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+    @Column(name = "image_path", nullable = false, length = 500)
+    private String imagePath;
 }
