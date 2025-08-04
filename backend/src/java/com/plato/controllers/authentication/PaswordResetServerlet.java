@@ -3,6 +3,7 @@ package com.plato.controllers.authentication;
 import com.plato.config.LoggerConfig;
 import com.plato.models.users.UserAuth;
 import com.plato.utils.DbUtils;
+import com.plato.utils.GoogleMailSenderUtil;
 import com.plato.utils.HibernateUtil;
 import com.plato.utils.JsonRequestResponseProcess;
 import com.plato.utils.ValidationUtils;
@@ -73,9 +74,36 @@ public class PaswordResetServerlet extends HttpServlet {
             UserAuth user = users.get(0);
             Transaction tx = session.beginTransaction();
             user.setPassword(dto.getPassword());
-            user.setVCode(null); 
+            user.setVCode(null);
             session.update(user);
             tx.commit();
+
+            String subject = "Plato's Wisdom - Password Reset Successful";
+            String htmlBody = "<!DOCTYPE html>"
+                    + "<html lang=\"en\">"
+                    + "<head>"
+                    + "    <meta charset=\"UTF-8\">"
+                    + "    <title>Password Reset Successful</title>"
+                    + "</head>"
+                    + "<body style=\"font-family: 'Segoe UI', sans-serif; background-color: #f4f4f4; padding: 20px; color: #333;\">"
+                    + "    <div style=\"max-width: 500px; margin: auto; background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden;\">"
+                    + "        <div style=\"background-color: #6c63ff; padding: 20px; text-align: center; color: white;\">"
+                    + "            <h2 style=\"margin: 0;\">Plato's Wisdom</h2>"
+                    + "            <p style=\"margin: 0; font-size: 14px;\">Your account security is important</p>"
+                    + "        </div>"
+                    + "        <div style=\"padding: 30px; text-align: center;\">"
+                    + "            <h3 style=\"margin-bottom: 10px;\">Password Reset Successful</h3>"
+                    + "            <p style=\"font-size: 16px; color: #666;\">You have successfully reset your password.</p>"
+                    + "            <p style=\"margin-top: 20px; font-size: 14px; color: #666;\">If this wasn't you, please <a href='mailto:support@platoswisdom.com' style='color: #6c63ff;'>contact support</a> immediately.</p>"
+                    + "        </div>"
+                    + "        <div style=\"background-color: #f1f1f1; padding: 15px; font-size: 12px; text-align: center; color: #999;\">"
+                    + "            Thank you for using Plato's Wisdom."
+                    + "        </div>"
+                    + "    </div>"
+                    + "</body>"
+                    + "</html>";
+
+            GoogleMailSenderUtil.send(dto.getEmail(), subject, htmlBody);
 
             jrrp.jsonResponseProcess(response, 200, true, null, "Password reset successful");
 

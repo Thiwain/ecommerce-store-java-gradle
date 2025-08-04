@@ -8,6 +8,7 @@ import com.plato.models.users.User;
 import com.plato.models.users.UserAuth;
 import com.plato.utils.HibernateUtil;
 import com.plato.utils.JsonRequestResponseProcess;
+import com.plato.utils.ValidationUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,8 +35,8 @@ class ProfileUpdateRequestDTO {
     private String fname;
     private String lname;
     private String mobile;
-    private int genderId;
-    private int districtId;
+    private Integer genderId;
+    private Integer districtId;
     private String address;
 }
 
@@ -64,6 +65,13 @@ public class UpdateProfileServlet extends HttpServlet {
             return;
         }
 
+        if (!dto.getMobile().isEmpty()) {
+            if (!ValidationUtils.isMobileValid(dto.getMobile())) {
+                jrrp.jsonResponseProcess(response, 400, false, null, "Invalid Mobile Number");
+                return;
+            }
+        }
+
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction tx = session.beginTransaction();
 
@@ -77,39 +85,48 @@ public class UpdateProfileServlet extends HttpServlet {
             user.setLname(dto.getLname());
             user.setMobile(dto.getMobile());
 
-            Gender gender = session.get(Gender.class, dto.getGenderId());
-            if (gender == null) {
-                jrrp.jsonResponseProcess(response, 400, false, null, "Invalid gender ID");
-                return;
+            if (dto.getGenderId() != null) {
+                Gender gender = session.get(Gender.class, dto.getGenderId());
+                if (gender == null) {
+                    jrrp.jsonResponseProcess(response, 400, false, null, "Invalid gender ID");
+                    return;
+                }
+                user.setGender(gender);
             }
-            user.setGender(gender);
 
             session.update(user);
 
-            List<Location> locationList = session
-                    .createQuery("FROM Location l WHERE l.user.id = :uid", Location.class)
-                    .setParameter("uid", user.getId())
-                    .list();
+            if (dto.getDistrictId() != null) {
+                List<Location> locationList = session
+                        .createQuery("FROM Location l WHERE l.user.id = :uid", Location.class)
+                        .setParameter("uid", user.getId())
+                        .list();
 
-            District district = session.get(District.class, dto.getDistrictId());
-            if (district == null) {
-                jrrp.jsonResponseProcess(response, 400, false, null, "Invalid district ID");
-                return;
+                District district = session.get(District.class, dto.getDistrictId());
+                if (district == null) {
+                    jrrp.jsonResponseProcess(response, 400, false, null, "Invalid district ID");
+                    return;
+                }
+
+                Location location;
+                if (locationList.isEmpty()) {
+                    location = new Location();
+                    location.setUser(user);
+                } else {
+                    location = locationList.get(0);
+                }
+
+                location.setDistrict(district);
+
+                if (!dto.getAddress().isEmpty()) {
+                    location.setAddress(dto.getAddress());
+                }
+                
+                location.setDateTime(Timestamp.from(Instant.now()));
+
+                session.saveOrUpdate(location);
+
             }
-
-            Location location;
-            if (locationList.isEmpty()) {
-                location = new Location();
-                location.setUser(user);
-            } else {
-                location = locationList.get(0);
-            }
-
-            location.setDistrict(district);
-            location.setAddress(dto.getAddress());
-            location.setDateTime(Timestamp.from(Instant.now()));
-
-            session.saveOrUpdate(location);
 
             tx.commit();
             jrrp.jsonResponseProcess(response, 200, true, null, "Profile updated successfully");

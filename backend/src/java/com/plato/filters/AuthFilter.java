@@ -7,8 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-// Protect specific paths (you can adjust as needed)
-@WebFilter(urlPatterns = {"/v1/update-profile", "/v1/logout", "/v1/load-profile"})
+@WebFilter(urlPatterns = {"/v1/logout", "/v1/load-profile","/v1/update-profile"})
 public class AuthFilter implements Filter {
 
     @Override
@@ -28,7 +27,6 @@ public class AuthFilter implements Filter {
             return;
         }
 
-        // Proceed if authenticated
         chain.doFilter(request, response);
     }
 }
