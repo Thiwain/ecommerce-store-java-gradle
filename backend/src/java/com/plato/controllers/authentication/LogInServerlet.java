@@ -73,6 +73,10 @@ public class LogInServerlet extends HttpServlet {
             HttpSession httpSession = request.getSession();
             httpSession.setAttribute("user", list.get(0));
 
+            if (dto.isRememberMe()) {
+                httpSession.setMaxInactiveInterval(60 * 60 * 24 * 7); 
+            }
+
             String sessionId = httpSession.getId();
             session.beginTransaction();
             list.get(0).setJsonSesId(sessionId);
