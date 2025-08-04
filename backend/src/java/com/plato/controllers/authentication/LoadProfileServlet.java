@@ -1,24 +1,23 @@
 package com.plato.controllers.authentication;
 
 import com.plato.models.users.*;
-import com.plato.utils.DbUtils;
 import com.plato.utils.HibernateUtil;
 import com.plato.utils.JsonRequestResponseProcess;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
-import java.util.List;
 
 @WebServlet(name = "LoadProfileServlet", urlPatterns = {"/v1/load-profile"})
 public class LoadProfileServlet extends HttpServlet {
 
-    JsonRequestResponseProcess jrrp = new JsonRequestResponseProcess();
+    private final JsonRequestResponseProcess jrrp = new JsonRequestResponseProcess();
 
     @Data
     @NoArgsConstructor
@@ -41,35 +40,69 @@ public class LoadProfileServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession httpSession = request.getSession(false);
+
         if (httpSession == null || httpSession.getAttribute("user") == null) {
             jrrp.jsonResponseProcess(response, 403, false, null, "Unauthorized access");
             return;
         }
 
-        UserAuth userAuth = (UserAuth) httpSession.getAttribute("user");
-        User loggedUser = userAuth.getUser();
+        UserAuth sessionUserAuth = (UserAuth) httpSession.getAttribute("user");
+
+        if (sessionUserAuth == null || sessionUserAuth.getUser() == null) {
+            jrrp.jsonResponseProcess(response, 403, false, null, "Session expired or user not found");
+            return;
+        }
+
+        int userId = sessionUserAuth.getUser().getId();
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            // Re-fetch full User entity to ensure session-bound proxies are resolved
-            User user = session.get(User.class, loggedUser.getId());
 
-            List<Location> userLocation = new DbUtils().simpleSearch(session, Location.class, "user", user).list();
-            Location ul = userLocation.isEmpty() ? null : userLocation.get(0);
+            User freshUser = session.get(User.class, userId);
+            if (freshUser == null) {
+                jrrp.jsonResponseProcess(response, 404, false, null, "User not found in DB");
+                return;
+            }
 
-            // Now safely access lazy-loaded Gender within the session
-            ProfileResponseDTO prdto = new ProfileResponseDTO(
-                    user.getFname(),
-                    user.getLname(),
-                    user.getMobile(),
+            Query<UserAuth> userAuthQuery = session.createQuery(
+                    "FROM UserAuth WHERE user.id = :uid", UserAuth.class);
+            userAuthQuery.setParameter("uid", userId);
+            UserAuth userAuth = userAuthQuery.uniqueResult();
+
+            if (userAuth == null) {
+                jrrp.jsonResponseProcess(response, 404, false, null, "UserAuth not found in DB");
+                return;
+            }
+
+            Query<Location> locationQuery = session.createQuery(
+                    "FROM Location WHERE user.id = :uid", Location.class);
+            locationQuery.setParameter("uid", userId);
+            Location location = locationQuery.uniqueResult();
+
+            // Set location fields conditionally
+            int districtId = 0;
+            String districtName = "";
+            String address = "";
+
+            if (location != null && location.getDistrict() != null) {
+                districtId = location.getDistrict().getId();
+                districtName = location.getDistrict().getDistrict();
+                address = location.getAddress() != null ? location.getAddress() : "";
+            }
+
+            ProfileResponseDTO profile = new ProfileResponseDTO(
+                    freshUser.getFname(),
+                    freshUser.getLname(),
+                    freshUser.getMobile(),
                     userAuth.getEmail(),
-                    user.getGender().getId(),
-                    user.getGender().getGenderType(),
-                    ul != null && ul.getDistrict() != null ? ul.getDistrict().getId() : 0,
-                    ul != null && ul.getDistrict() != null ? ul.getDistrict().getDistrict() : "",
-                    ul != null ? ul.getAddress() : ""
+                    freshUser.getGender() != null ? freshUser.getGender().getId() : 0,
+                    freshUser.getGender() != null ? freshUser.getGender().getGenderType() : null,
+                    districtId,
+                    districtName,
+                    address
             );
 
-            jrrp.jsonResponseProcess(response, 200, true, prdto, "Profile loaded successfully");
+            jrrp.jsonResponseProcess(response, 200, true, profile, "Profile loaded");
+
         } catch (Exception e) {
             jrrp.jsonResponseProcess(response, 500, false, null, "Server error: " + e.getMessage());
         }
