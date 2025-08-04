@@ -7,6 +7,7 @@ package com.plato.controllers.authentication;
 import com.plato.config.LoggerConfig;
 import com.plato.dto.request.LoginRequestDTO;
 import com.plato.models.users.UserAuth;
+import com.plato.models.users.UserAuthStatus;
 import com.plato.utils.DbUtils;
 import com.plato.utils.HibernateUtil;
 import com.plato.utils.JsonRequestResponseProcess;
@@ -65,8 +66,18 @@ public class LogInServerlet extends HttpServlet {
                 jrrp.jsonResponseProcess(response, 401, false, null, "Invalid Email or Password");
                 return;
             }
+            if (!"ACTIVE".equals(list.get(0).getUserAuthStatus().getStatus())) {
+                jrrp.jsonResponseProcess(response, 403, false, null, "Your account is not active. Please verify your email or contact support.");
+                return;
+            }
             HttpSession httpSession = request.getSession();
             httpSession.setAttribute("user", list.get(0));
+
+            String sessionId = httpSession.getId();
+            session.beginTransaction();
+            list.get(0).setJsonSesId(sessionId);
+            session.update(list.get(0));
+            session.getTransaction().commit();
 
             jrrp.jsonResponseProcess(response, 200, true, null, "Log In Successful!");
         } catch (Exception e) {

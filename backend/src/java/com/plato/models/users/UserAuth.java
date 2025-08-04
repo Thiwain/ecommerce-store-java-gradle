@@ -50,4 +50,7 @@ public class UserAuth {
 
     @Column(name = "updated_at", nullable = false)
     private Timestamp updateDateTime;
+
+    @Column(name = "json_sesid", nullable = true, columnDefinition = "TEXT")
+    private String jsonSesId;
 }
