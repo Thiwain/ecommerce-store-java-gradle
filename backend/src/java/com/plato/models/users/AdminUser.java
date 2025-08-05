@@ -1,17 +1,7 @@
 package com.plato.models.users;
 
 import java.sql.Timestamp;
-
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,19 +24,19 @@ public class AdminUser {
     @Column(name = "lname", nullable = false)
     private String lname;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "v_code", nullable = false, length = 6)
+    @Column(name = "v_code", length = 6)
     private String vCode;
 
-    @Column(name = "mobile", nullable = false, length = 15)
-    private String mobile;
-
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER) 
     @JoinColumn(name = "user_auth_status_id", nullable = false)
     private UserAuthStatus userAuthStatus;
 
     @Column(name = "date_time", nullable = false)
     private Timestamp dateTime;
+
+    @Column(name = "active_status", nullable = false)
+    private boolean activeStatus;
 }

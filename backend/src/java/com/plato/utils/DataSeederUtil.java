@@ -5,10 +5,13 @@ import com.plato.models.deployment.Deployment;
 import com.plato.models.invoice.DiscountOfferStatus;
 import com.plato.models.orders.FulFillStatus;
 import com.plato.models.product.Category;
+import com.plato.models.users.AdminUser;
 import com.plato.models.users.District;
 import com.plato.models.users.Gender;
 import com.plato.models.users.UserAuthStatus;
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import org.hibernate.Criteria;
@@ -115,15 +118,50 @@ public class DataSeederUtil {
             bookCategories.add("Science");
             bookCategories.add("Travel");
             bookCategories.add("Art & Photography");
-            
+
             for (String bookCategory : bookCategories) {
-                if(!bookCategoryExists(session, bookCategory)){
+                if (!bookCategoryExists(session, bookCategory)) {
                     session.save(new Category(0, bookCategory));
                 }
             }
 
             tx.commit();
             session.close();
+
+            try (Session session2 = HibernateUtil.getSessionFactory().openSession()) {
+                Transaction tx2 = session2.beginTransaction();
+
+                Criteria existingAdminCriteria = session2.createCriteria(AdminUser.class);
+                existingAdminCriteria.add(Restrictions.eq("email", "thiwainm@gmail.com"));
+                List<AdminUser> existing = existingAdminCriteria.list();
+
+                UserAuthStatus status;
+                Criteria statusCriteria = session2.createCriteria(UserAuthStatus.class);
+                statusCriteria.add(Restrictions.eq("status", "ACTIVE"));
+                status = (UserAuthStatus) statusCriteria.uniqueResult();
+
+                if (status == null) {
+                    status = new UserAuthStatus();
+                    status.setStatus("ACTIVE");
+                    session2.save(status);
+                    session2.flush();
+                }
+
+                if (existing.isEmpty()) {
+                    AdminUser admin = new AdminUser();
+                    admin.setFname("Super");
+                    admin.setLname("Admin");
+                    admin.setEmail("thiwainm@gmail.com");
+                    admin.setDateTime(Timestamp.from(Instant.now()));
+                    admin.setActiveStatus(true);
+                    admin.setUserAuthStatus(status);
+                    admin.setVCode(null);
+
+                    session2.save(admin);
+                }
+                tx2.commit();
+            }
+
         } catch (Exception e) {
             LoggerConfig.logger.log(Level.WARNING, "MySQL Driver not found!", e);
             e.printStackTrace();
@@ -135,7 +173,7 @@ public class DataSeederUtil {
         criteria.add(Restrictions.eq("genderType", genderType));
         return criteria.uniqueResult() != null;
     }
-    
+
     private boolean bookCategoryExists(Session session, String name) {
         Criteria criteria = session.createCriteria(Category.class);
         criteria.add(Restrictions.eq("name", name));
