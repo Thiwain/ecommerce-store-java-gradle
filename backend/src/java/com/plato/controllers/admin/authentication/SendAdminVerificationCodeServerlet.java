@@ -38,7 +38,6 @@ public class SendAdminVerificationCodeServerlet extends HttpServlet {
 
         AdminLoginReqDTO dto;
 
-        // Parse JSON request
         try {
             dto = jrrp.jsonRequestProcess(request, AdminLoginReqDTO.class);
         } catch (Exception e) {
@@ -46,7 +45,6 @@ public class SendAdminVerificationCodeServerlet extends HttpServlet {
             return;
         }
 
-        // Validate email input
         if (dto.getEmail() == null || dto.getEmail().trim().isEmpty()) {
             jrrp.jsonResponseProcess(response, 400, false, null, "Email is required");
             return;
@@ -57,7 +55,6 @@ public class SendAdminVerificationCodeServerlet extends HttpServlet {
             return;
         }
 
-        // Process admin verification
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             List<AdminUser> adminList = new DbUtils().simpleSearch(session, AdminUser.class, "email", dto.getEmail()).list();
 
