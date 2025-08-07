@@ -11,9 +11,6 @@ import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-/**
- * Servlet to handle admin logout.
- */
 @WebServlet(name = "AdminLogoutServlet", urlPatterns = {"/v1/admin/logout"})
 public class AdminLogoutServlet extends HttpServlet {
 
@@ -23,7 +20,7 @@ public class AdminLogoutServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession session = request.getSession(false); // don't create if doesn't exist
+        HttpSession session = request.getSession(false); 
 
         if (session != null && session.getAttribute("adminuser") != null) {
             session.invalidate();

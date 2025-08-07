@@ -37,6 +37,16 @@ class ReqDto {
     private String vcode;
 }
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+class AdminDataDto {
+
+    private String email;
+    private String fname;
+    private String lname;
+}
+
 @WebServlet(name = "VerifyAdminVerificationCodeServlet", urlPatterns = {"/v1/verify-admin-verification-code"})
 public class VerifyAdminVerficationCodeServerlet extends HttpServlet {
 
@@ -80,16 +90,18 @@ public class VerifyAdminVerficationCodeServerlet extends HttpServlet {
                 return;
             }
 
+            AdminDataDto adminDataDto = new AdminDataDto(admin.getEmail(), admin.getFname(), admin.getLname());
+
             Transaction tx = session.beginTransaction();
-            admin.setVCode(null); // Clear the verification code
+            admin.setVCode(null);
             session.update(admin);
             tx.commit();
 
             HttpSession httpSession = request.getSession();
             httpSession.setAttribute("adminuser", admin);
-            httpSession.setMaxInactiveInterval(60 * 60 * 3); // 3 hours
+            httpSession.setMaxInactiveInterval(60 * 60 * 3); 
 
-            jrrp.jsonResponseProcess(response, 200, true, null, "Verification successful");
+            jrrp.jsonResponseProcess(response, 200, true, adminDataDto, "Verification successful");
 
         } catch (Exception e) {
             LoggerConfig.logger.log(Level.SEVERE, "Error verifying admin", e);
