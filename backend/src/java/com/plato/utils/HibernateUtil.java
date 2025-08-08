@@ -36,7 +36,7 @@ public class HibernateUtil {
 
                 settings.put("hibernate.show_sql", "true");
                 settings.put("hibernate.format_sql", "true");
-                settings.put("hibernate.hbm2ddl.auto", "update");
+                settings.put("hibernate.hbm2ddl.auto", "create");
 
                 configuration.setProperties(settings);
 

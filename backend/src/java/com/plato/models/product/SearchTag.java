@@ -16,7 +16,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "publisher")
+@Table(name = "search_tag")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,6 +26,6 @@ public class SearchTag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "tag", nullable = false, length = 45)
+    @Column(name = "name", nullable = false, length = 45)
     private String name;
 }
