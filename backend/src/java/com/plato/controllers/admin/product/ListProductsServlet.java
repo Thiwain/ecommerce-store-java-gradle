@@ -12,8 +12,6 @@ import javax.servlet.http.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -44,15 +42,6 @@ public class ListProductsServlet extends HttpServlet {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             List<ProductDetails> products = new DbUtils().findAll(session, ProductDetails.class);
 
-            /*
-    private int id;
-    private Publisher publisher;
-    private String title;
-    private Author author;
-    private boolean productVisibility;
-    private Category category;
-    private Timestamp dateTime;
-             */
             List<ProductItem> productItems = new ArrayList<>();
             for (ProductDetails product : products) {
                 ProductItem productItem = new ProductItem();
