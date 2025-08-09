@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-class ProductItem {
+class ProductItem2 {
 
     private String id;
     private String title;
@@ -71,7 +71,7 @@ public class LoadProductDetailServerlet extends HttpServlet {
                     .simpleSearch(session, ProductDetailsHasTag.class, "productDetails.id", productID)
                     .list();
 
-            ProductItem productItem = new ProductItem();
+            ProductItem2 productItem = new ProductItem2();
             productItem.setId(String.valueOf(product.getId()));
             productItem.setTitle(product.getTitle());
             productItem.setPublisher(product.getPublisher() != null ? product.getPublisher().getName() : null);
@@ -80,7 +80,7 @@ public class LoadProductDetailServerlet extends HttpServlet {
             productItem.setDescription(product.getDescription());
             productItem.setVisibility(String.valueOf(product.isProductVisibility()));
             productItem.setAuthor(product.getAuthor() != null ? product.getAuthor().getName() : null);
-            productItem.setImgUrl("C:" + (product.getImageUrl() != null ? product.getImageUrl() : ""));
+            productItem.setImgUrl((product.getImageUrl() != null ? product.getImageUrl() : ""));
             productItem.setTimestamp(product.getDateTime() != null ? product.getDateTime().toString() : null);
 
             Vector<String> tags = new Vector<>();
